@@ -42,10 +42,10 @@ public class EasyJob {
      */
     @GET
     @Path("getclientdata")
-    @Produces(MediaType.TEXT_HTML)
+    @Produces(MediaType.TEXT_PLAIN)
     public String getClientData() {
         //TODO return proper representation object
-        return new ClientServices().getAllUsers().toString();
+        return new ClientServices().getAllClients().toString();
     }
 
     @POST
@@ -54,7 +54,7 @@ public class EasyJob {
     @Produces(MediaType.TEXT_HTML)
     public String addClientData(String json) {
 
-        boolean getResponse = new ClientServices().addUser(json);
+        boolean getResponse = new ClientServices().addClient(json);
         if (getResponse) {
             return "data inserted";
         } else {
@@ -70,13 +70,4 @@ public class EasyJob {
         return data + " returned";
     }
 
-    /**
-     * PUT method for updating or creating an instance of EasyJob
-     *
-     * @param content representation for the resource
-     */
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void putJson(String content) {
-    }
 }

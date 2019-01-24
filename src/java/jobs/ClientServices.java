@@ -37,13 +37,12 @@ public class ClientServices {
 //        }
 //        return "";
 //    }
-    public JSONArray getAllUsers() {
+    public JSONArray getAllClients() {
         try {
             conn = DbConnection.connect();
             pstmt = conn.prepareStatement("select * from client_data");
             rs = pstmt.executeQuery();
             jSONArray = new JSONArray();
-
             while (rs.next()) {
                 JSONObject json = new JSONObject();
                 json.put("id", rs.getInt("id"));
@@ -56,26 +55,25 @@ public class ClientServices {
                 json.put("password", rs.getString("password"));
                 json.put("created_at", rs.getString("created_at"));
                 json.put("updated_at", rs.getString("updated_at"));
-
                 jSONArray.put(json);
 
             }
 
         } catch (Exception e) {
-            System.out.println("ManageUserServices/getAllUsers():" + e);
+            System.out.println("getAllClients() :" + e);
         } finally {
             try {
                 rs.close();
                 pstmt.close();
                 conn.close();
             } catch (Exception e) {
-                System.out.println("ManageUserServices/getAllUsers():" + e);
+                System.out.println("ClientServices/getAllClients(): " + e);
             }
         }
         return jSONArray;
     }
 
-    public boolean addUser(String objbean) {
+    public boolean addClient(String objbean) {
         try {
             JSONObject json = new JSONObject(objbean);
             conn = DbConnection.connect();
@@ -87,7 +85,7 @@ public class ClientServices {
             pstmt.setString(5, json.getString("web_address"));
             pstmt.setString(6, json.getString("user_name"));
             pstmt.setString(7, json.getString("password"));
-            pstmt.setString(8,getCurrentDate());
+            pstmt.setString(8, getCurrentDate());
 
             int i = pstmt.executeUpdate();
             if (i > 0) {
