@@ -1,4 +1,4 @@
-package jobs;
+package jobs.service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import jobs.db.DbConnection;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -16,27 +17,6 @@ public class ClientServices {
     PreparedStatement pstmt;
     JSONArray jSONArray;
 
-//    public String getAllUsers() {
-//        try {
-//            conn = DbConnection.connect();
-//            pstmt = conn.prepareStatement("select * from client_data");
-//            rs = pstmt.executeQuery();
-//
-//            System.out.println("result " + rs);
-//
-//        } catch (Exception e) {
-//            System.out.println("getAllUsers(): " + e);
-//        } finally {
-//            try {
-//                rs.close();
-//                pstmt.close();
-//                conn.close();
-//            } catch (Exception e) {
-//                System.out.println("getAllUsers(): " + e);
-//            }
-//        }
-//        return "";
-//    }
     public JSONArray getAllClients() {
         try {
             conn = DbConnection.connect();
@@ -85,33 +65,23 @@ public class ClientServices {
             pstmt.setString(5, json.getString("web_address"));
             pstmt.setString(6, json.getString("user_name"));
             pstmt.setString(7, json.getString("password"));
-            pstmt.setString(8, getCurrentDate());
+            pstmt.setString(8, Utility.getCurrentDate());
 
             int i = pstmt.executeUpdate();
             if (i > 0) {
                 return true;
             }
         } catch (Exception e) {
-            System.out.println("ManageUserServices/addUser():" + e);
+            System.out.println("ClientServices/addUser():" + e);
         } finally {
             try {
                 pstmt.close();
                 conn.close();
             } catch (Exception e) {
-                System.out.println("ManageUserServices/AddUser():" + e);
+                System.out.println("ClientServices/AddUser():" + e);
             }
         }
         return false;
-    }
-
-    public String getCurrentDate() {
-        try {
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-            Date date = new Date();
-            return "" + formatter.format(date);
-        } catch (Exception e) {
-        }
-        return "";
     }
 
 //    public static void main(String[] args) {
