@@ -11,8 +11,13 @@ insert into client_data(name,address,email_id,contact,web_address,user_name,pass
 insert into job_data(title,location,type,qualification,experience,skills,description,start_date_time,end_date_time,budget,job_client_id) values('software developer','pathankot','hourly','B.tech','1 to 4 years','java,android','we need a java developer','26/01/2019 12:00:00 pm','30/01/2019 5:00:00 pm','5k','1');
 
 
+insert into applicant_data(name,address,contact,email_id,qualification,certification_training,experience,resume,user_name,password,job_type_preference,open_for_relocation,current_salary,expected_salary,created_at) values('mahesh','pathankot','9685741235','mahesh@example.com','B.Tech',null,'3 years',null,'mahesh','12345','hourly',1,'20k','25k','31-01-2019 20:30:00')
 
 
+
+' update query '
+
+update client_data set name=?,address=?,email_id=?,contact=?,web_address=?,password=?,updated_at=? where user_name=?
 
 
 
