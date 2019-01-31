@@ -3,9 +3,6 @@ package jobs.service;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import jobs.db.DbConnection;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -13,13 +10,16 @@ import org.json.JSONObject;
 public class ClientServices {
 
     ResultSet rs;
-    Connection conn;
+   static Connection conn;
     PreparedStatement pstmt;
     JSONArray jSONArray;
 
+    static {
+        conn = DbConnection.connect();
+    }
+    
     public JSONArray getAllClients() {
         try {
-            conn = DbConnection.connect();
             pstmt = conn.prepareStatement("select * from client_data");
             rs = pstmt.executeQuery();
             jSONArray = new JSONArray();
@@ -56,7 +56,6 @@ public class ClientServices {
     public boolean addClient(String objbean) {
         try {
             JSONObject json = new JSONObject(objbean);
-            conn = DbConnection.connect();
             pstmt = conn.prepareStatement("insert into client_data(name,address,email_id,contact,web_address,user_name,password,created_at) values(?,?,?,?,?,?,?,?)");
             pstmt.setString(1, json.getString("name"));
             pstmt.setString(2, json.getString("address"));
@@ -86,7 +85,6 @@ public class ClientServices {
 
     public String getClient(String user_name) {
         try {
-            conn = DbConnection.connect();
             pstmt = conn.prepareStatement("select * from client_data where user_name = ?");
             pstmt.setString(1, user_name);
             rs = pstmt.executeQuery();
@@ -120,5 +118,33 @@ public class ClientServices {
         return "";
     }
 
-    
+    public boolean updateClient(String objbean) {
+        try {
+            JSONObject json = new JSONObject(objbean);
+            pstmt = conn.prepareStatement("update client_data set name=?,address=?,email_id=?,contact=?,web_address=?,password=?,updated_at=? where user_name=?");
+            pstmt.setString(1, json.getString("name"));
+            pstmt.setString(2, json.getString("address"));
+            pstmt.setString(3, json.getString("email_id"));
+            pstmt.setString(4, json.getString("contact"));
+            pstmt.setString(5, json.getString("web_address"));
+            pstmt.setString(6, json.getString("password"));
+            pstmt.setString(7, Utility.getCurrentDate());
+            pstmt.setString(8, json.getString("user_name"));
+            int i = pstmt.executeUpdate();
+            if (i > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            System.out.println("updateClient():" + e);
+        } finally {
+            try {
+                pstmt.close();
+                conn.close();
+            } catch (Exception e) {
+                System.out.println("ClientServices/updateClient():" + e);
+            }
+        }
+        return false;
+    }
+
 }

@@ -10,13 +10,16 @@ import org.json.JSONObject;
 public class ApplicantServices {
 
     ResultSet rs;
-    Connection conn;
+    static Connection conn;
     PreparedStatement pstmt;
     JSONArray jSONArray;
 
+    static {
+        conn = DbConnection.connect();
+    }
+
     public JSONArray getAllApplicants() {
         try {
-            conn = DbConnection.connect();
             pstmt = conn.prepareStatement("select * from applicant_data");
             rs = pstmt.executeQuery();
             jSONArray = new JSONArray();
@@ -58,7 +61,6 @@ public class ApplicantServices {
     public boolean addApplicant(String objbean) {
         try {
             JSONObject json = new JSONObject(objbean);
-            conn = DbConnection.connect();
             pstmt = conn.prepareStatement("insert into applicant_data(name,address,contact,email_id,qualification,certification_training,experience,resume,user_name,password,job_type_preference,open_for_relocation,current_salary,expected_salary,created_at) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             pstmt.setString(1, json.getString("name"));
             pstmt.setString(2, json.getString("address"));
@@ -96,7 +98,6 @@ public class ApplicantServices {
     public String getApplicant(String user_name) {
 
         try {
-            conn = DbConnection.connect();
             pstmt = conn.prepareStatement("select * from applicant_data where user_name=?");
 
             pstmt.setString(1, user_name);
@@ -136,6 +137,42 @@ public class ApplicantServices {
         return "";
     }
 
-    
+    public boolean updateApplicant(String objbean) {
+        try {
+            JSONObject json = new JSONObject(objbean);
+            pstmt = conn.prepareStatement("update applicant_data set name=?,address=?,contact=?,email_id=?,qualification=?,certification_training=?,experience=?,resume=?,password=?,job_type_preference=?,open_for_relocation=?,current_salary=?,updated_salary=?,updated_at=? where user_name=?");
+            pstmt.setString(1, json.getString("name"));
+            pstmt.setString(2, json.getString("address"));
+            pstmt.setString(3, json.getString("contact"));
+            pstmt.setString(4, json.getString("email_id"));
+            pstmt.setString(5, json.getString("qualification"));
+            pstmt.setString(6, json.getString("certification_training"));
+            pstmt.setString(7, json.getString("experience"));
+            pstmt.setString(8, json.getString("resume"));
+            pstmt.setString(9, json.getString("password"));
+            pstmt.setString(10, json.getString("job_type_preference"));
+            pstmt.setString(11, json.getString("open_for_relocation"));
+            pstmt.setString(12, json.getString("current_salary"));
+            pstmt.setString(13, json.getString("updated_salary"));
+            pstmt.setString(14, Utility.getCurrentDate());
+
+            pstmt.setString(15, json.getString("user_name"));
+
+            int i = pstmt.executeUpdate();
+            if (i > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            System.out.println("updateApplicant():" + e);
+        } finally {
+            try {
+                pstmt.close();
+                conn.close();
+            } catch (Exception e) {
+                System.out.println("ApplicantServices/updateApplicant():" + e);
+            }
+        }
+        return false;
+    }
 
 }

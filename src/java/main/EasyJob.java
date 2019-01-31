@@ -6,19 +6,14 @@
 package main;
 
 import jobs.service.ClientServices;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PUT;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
+import jobs.service.ApplicantServices;
 import jobs.service.JobService;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * REST Web Service
@@ -27,9 +22,6 @@ import org.json.JSONObject;
  */
 @Path("easyjob")
 public class EasyJob {
-
-    @Context
-    private UriInfo context;
 
     /**
      * Creates a new instance of EasyJob
@@ -43,7 +35,7 @@ public class EasyJob {
      * @return an instance of java.lang.String
      */
     @GET
-    @Path("getclientdata")
+    @Path("getallclients")
     @Produces(MediaType.TEXT_PLAIN)
     public String getClientData() {
         //TODO return proper representation object
@@ -62,6 +54,73 @@ public class EasyJob {
         } else {
             return "data not inserted";
         }
+    }
+
+    @POST
+    @Path("updateclient")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_HTML)
+    public String updateClientData(String json) {
+
+        boolean getResponse = new ClientServices().updateClient(json);
+        if (getResponse) {
+            return "data updated";
+        } else {
+            return "data not updated";
+        }
+    }
+
+    @POST
+    @Path("getclientinfo")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.TEXT_HTML)
+    public String getClientData(String user_name) {
+        return new ClientServices().getClient(user_name);
+    }
+
+    // Applicant Class Methods
+    @GET
+    @Path("getallapplicants")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getApplicantData() {
+        //TODO return proper representation object
+        return new ApplicantServices().getAllApplicants().toString();
+    }
+
+    @POST
+    @Path("addapplicant")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_HTML)
+    public String addApplicantData(String json) {
+
+        boolean getResponse = new ApplicantServices().addApplicant(json);
+        if (getResponse) {
+            return "data inserted";
+        } else {
+            return "data not inserted";
+        }
+    }
+
+    @POST
+    @Path("updateclient")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_HTML)
+    public String updateApplicantData(String json) {
+
+        boolean getResponse = new ApplicantServices().updateApplicant(json);
+        if (getResponse) {
+            return "data updated";
+        } else {
+            return "data not updated";
+        }
+    }
+
+    @POST
+    @Path("getapplicantinfo")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.TEXT_HTML)
+    public String getApplicantData(String user_name) {
+        return new ApplicantServices().getApplicant(user_name);
     }
 
     //   Job Class Methods
@@ -85,6 +144,28 @@ public class EasyJob {
         } else {
             return "data not inserted";
         }
+    }
+
+    @POST
+    @Path("updatejob")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_HTML)
+    public String updateJob(String json) {
+
+        boolean getResponse = new JobService().updateJob(json);
+        if (getResponse) {
+            return "data updated";
+        } else {
+            return "data not updated";
+        }
+    }
+
+    @POST
+    @Path("getjobsbyclient")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getJobsByClient(String id) {
+        //TODO return proper representation object
+        return new JobService().getAllJobsByClient(Integer.parseInt(id)).toString();
     }
 
 }
