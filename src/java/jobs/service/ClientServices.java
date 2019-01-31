@@ -72,23 +72,53 @@ public class ClientServices {
                 return true;
             }
         } catch (Exception e) {
-            System.out.println("ClientServices/addUser():" + e);
+            System.out.println("addClient():" + e);
         } finally {
             try {
                 pstmt.close();
                 conn.close();
             } catch (Exception e) {
-                System.out.println("ClientServices/AddUser():" + e);
+                System.out.println("ClientServices/AddClient():" + e);
             }
         }
         return false;
     }
 
-//    public static void main(String[] args) {
-//        try {
-//            System.out.println("return " + new Services().getAllUsers());
-//        } catch (Exception e) {
-//            System.out.println("main " + e);
-//        }
-//    }
+    public String getClient(String user_name) {
+        try {
+            conn = DbConnection.connect();
+            pstmt = conn.prepareStatement("select * from client_data where user_name = ?");
+            pstmt.setString(1, user_name);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                JSONObject json = new JSONObject();
+                json.put("id", rs.getInt("id"));
+                json.put("name", rs.getString("name"));
+                json.put("address", rs.getString("address"));
+                json.put("email_id", rs.getString("email_id"));
+                json.put("contact", rs.getString("contact"));
+                json.put("web_address", rs.getString("web_address"));
+                json.put("user_name", rs.getString("user_name"));
+                json.put("password", rs.getString("password"));
+                json.put("created_at", rs.getString("created_at"));
+                json.put("updated_at", rs.getString("updated_at"));
+                return json.toString();
+
+            }
+
+        } catch (Exception e) {
+            System.out.println("getClient() :" + e);
+        } finally {
+            try {
+                rs.close();
+                pstmt.close();
+                conn.close();
+            } catch (Exception e) {
+                System.out.println("ClientServices/getClient(): " + e);
+            }
+        }
+        return "";
+    }
+
+    
 }
